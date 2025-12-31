@@ -1,7 +1,7 @@
 // Tracking utility for Google Sheets via Apps Script
 // Replace SCRIPT_URL with your actual Google Apps Script web app URL
 
-const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ9Q6UiJqvHmSJWSN1VD2i2f-oNp7C0U-8obi0CpMgBDIVx-SKtHlAVXewvWhUMNQiBA/exec';
 
 interface TrackingEvent {
   event_type: 'page_view' | 'page_leave' | 'click';
@@ -24,11 +24,6 @@ const getSessionId = (): string => {
 
 // Send event to Google Sheets
 const sendToGoogleSheets = async (event: TrackingEvent): Promise<void> => {
-  if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
-    // Log to console for development
-    console.log('[Tracking]', event);
-    return;
-  }
 
   try {
     await fetch(SCRIPT_URL, {
