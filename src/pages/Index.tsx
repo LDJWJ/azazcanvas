@@ -45,7 +45,7 @@ const Index = () => {
         <h1 className="animate-slide-up text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
           세상의 모든 디자인은
           <br />
-          <span className="text-primary">미리캔버스</span>로 완성
+          <span className="text-primary">아자아자캔버스</span>로 완성
         </h1>
         <p className="mx-auto mt-6 max-w-2xl animate-fade-in text-lg text-muted-foreground">
           PPT와 카드뉴스부터 동영상까지 템플릿으로 쉽고 간편하게 시작해보세요!
@@ -94,7 +94,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border bg-secondary/30 py-8">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2024 MiriCanvas. 모든 권리 보유.</p>
+          <p>© 2024 아자아자캔버스. 모든 권리 보유.</p>
         </div>
       </footer>
     </div>

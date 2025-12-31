@@ -92,7 +92,7 @@ export function Header() {
         {/* Logo */}
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-primary">MiriCanvas</span>
+            <span className="text-xl font-bold text-primary">아자아자캔버스</span>
           </Link>
 
           {/* Navigation */}
