@@ -47,9 +47,9 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
   const aspectRatioClass = 'aspect-[9/16]';
 
   const sizeClass = {
-    small: 'w-full min-w-0 sm:w-32',
-    medium: 'w-full min-w-0 sm:w-48',
-    large: 'w-full min-w-0 sm:w-64',
+    small: 'w-full min-w-0',
+    medium: 'w-full min-w-0',
+    large: 'w-full min-w-0',
   }[size];
 
   const handleClick = () => {
