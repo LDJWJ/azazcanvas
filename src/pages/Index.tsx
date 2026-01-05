@@ -89,11 +89,12 @@ const Index = () => {
             {templates
               .filter((t) => t.aspectRatio === '9:16' || t.tags.some(tag => ['릴스', '숏폼', '쇼츠', 'shorts'].includes(tag.toLowerCase())))
               .map((template) => (
-                <TemplateCard
-                  key={template.id}
-                  template={template}
-                  size="large"
-                />
+                <div key={template.id} className="w-[calc((100%-14px)/2)] sm:w-auto">
+                  <TemplateCard
+                    template={template}
+                    size="large"
+                  />
+                </div>
               ))}
           </div>
         </div>
