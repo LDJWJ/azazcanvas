@@ -64,7 +64,7 @@ const Index = () => {
       {/* Featured Templates Row 1 - Large Cards */}
       <section className="overflow-hidden py-8">
         <div className="container">
-          <div className="flex animate-fade-in gap-4 overflow-x-auto pb-4 custom-scrollbar">
+          <div className="grid grid-cols-1 gap-4 sm:flex sm:animate-fade-in sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
             {templates.slice(0, 4).map((template) => (
               <TemplateCard
                 key={template.id}
@@ -79,7 +79,7 @@ const Index = () => {
       {/* Featured Templates Row 2 - Medium Cards */}
       <section className="overflow-hidden py-4 pb-16">
         <div className="container">
-          <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+          <div className="grid grid-cols-2 gap-4 sm:flex sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
             {templates.slice(4, 12).map((template) => (
               <TemplateCard
                 key={template.id}
