@@ -65,11 +65,11 @@ const Search = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header hideCreateButton />
 
-      <main className="container py-8">
+      <main className="container py-6">
         {/* Breadcrumb */}
-        <nav className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+        <nav className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
           <Link to="/templates" className="hover:text-foreground">
             템플릿
           </Link>
@@ -78,13 +78,16 @@ const Search = () => {
         </nav>
 
         {/* Title */}
-        <h1 className="mb-6 text-2xl font-bold md:text-3xl">
+        <h1 className="mb-4 text-xl font-bold md:text-2xl">
           {query ? `${query} 템플릿` : '검색 결과'}
         </h1>
 
-        {/* Search Bar */}
-        <div className="mb-6">
-          <SearchBar showDropdown />
+        {/* Search Bar - Compact */}
+        <div className="mb-5">
+          <SearchBar 
+            size="compact" 
+            placeholder={query ? `${query} 템플릿 검색` : '템플릿 검색'}
+          />
         </div>
 
         {/* Filters & Keywords */}
