@@ -1,33 +1,63 @@
 import { useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { templates } from '@/data/templates';
 
+// Import template images
+import template1 from '@/assets/templates/template-1.jpg';
+import template2 from '@/assets/templates/template-2.jpg';
+import template3 from '@/assets/templates/template-3.jpg';
+import template4 from '@/assets/templates/template-4.jpg';
+import template5 from '@/assets/templates/template-5.jpg';
+import template6 from '@/assets/templates/template-6.jpg';
+import template7 from '@/assets/templates/template-7.jpg';
+import template8 from '@/assets/templates/template-8.jpg';
+import template9 from '@/assets/templates/template-9.jpg';
+import template10 from '@/assets/templates/template-10.jpg';
+import template11 from '@/assets/templates/template-11.jpg';
+import template12 from '@/assets/templates/template-12.jpg';
+
+const thumbnailMap: Record<string, string> = {
+  'tpl-1': template1,
+  'tpl-2': template2,
+  'tpl-3': template3,
+  'tpl-4': template4,
+  'tpl-5': template5,
+  'tpl-6': template6,
+  'tpl-7': template7,
+  'tpl-8': template8,
+  'tpl-9': template9,
+  'tpl-10': template10,
+  'tpl-11': template11,
+  'tpl-12': template12,
+};
+
 const aspectRatioOptions = [
-  { value: '9:16', label: '9:16', description: '세로형 (쇼츠/릴스)' },
-  { value: '1:1', label: '1:1', description: '정사각형' },
-  { value: '16:9', label: '16:9', description: '가로형' },
+  { value: '9:16', label: '9:16', description: '세로형', aspectClass: 'aspect-[9/16]' },
+  { value: '1:1', label: '1:1', description: '정사각형', aspectClass: 'aspect-square' },
+  { value: '16:9', label: '16:9', description: '가로형', aspectClass: 'aspect-video' },
 ];
 
 const TemplateUse = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
   const [selectedRatio, setSelectedRatio] = useState('9:16');
 
-  // Find template by id or use first one as fallback
   const template = templates.find((t) => t.id === id) || templates[0];
+  const thumbnailSrc = thumbnailMap[template.id] || template.thumbnail;
+  
   const isVideo = template.type === 'video' || template.tags.some(tag => 
     ['릴스', '쇼츠', 'shorts', '숏폼', '동영상'].includes(tag.toLowerCase())
   );
+
+  const currentAspect = aspectRatioOptions.find(opt => opt.value === selectedRatio);
 
   const handleBack = () => {
     navigate(-1);
   };
 
   const handleStart = () => {
-    // Navigate to editor with selected options
     navigate(`/editor?template=${template.id}&ratio=${selectedRatio}`);
   };
 
@@ -43,18 +73,18 @@ const TemplateUse = () => {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <h1 className="flex-1 text-center font-semibold">템플릿 사용</h1>
-          <div className="w-9" /> {/* Spacer for centering */}
+          <div className="w-9" />
         </div>
       </header>
 
       {/* Content */}
       <main className="flex-1">
         <div className="container py-6">
-          {/* Template Preview */}
-          <div className="relative mx-auto mb-6 max-w-sm overflow-hidden rounded-2xl bg-secondary">
-            <div className="aspect-[9/16]">
+          {/* Template Preview - Dynamic aspect ratio */}
+          <div className="relative mx-auto mb-6 flex max-w-sm items-center justify-center">
+            <div className={`relative w-full overflow-hidden rounded-2xl bg-secondary ${currentAspect?.aspectClass || 'aspect-[9/16]'}`}>
               <img
-                src={template.thumbnail}
+                src={thumbnailSrc}
                 alt={template.title}
                 className="h-full w-full object-cover"
               />
