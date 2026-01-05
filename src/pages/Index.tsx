@@ -61,32 +61,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Templates Row 1 - Large Cards */}
-      <section className="overflow-hidden py-8">
+      {/* Reels Templates Section */}
+      <section className="overflow-hidden py-8 pb-16">
         <div className="container">
-          <div className="grid grid-cols-1 gap-4 sm:flex sm:animate-fade-in sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
-            {templates.slice(0, 4).map((template) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                size="large"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Templates Row 2 - Medium Cards */}
-      <section className="overflow-hidden py-4 pb-16">
-        <div className="container">
-          <div className="grid grid-cols-2 gap-4 sm:flex sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
-            {templates.slice(4, 12).map((template) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                size="small"
-              />
-            ))}
+          <h2 className="mb-6 text-2xl font-bold text-foreground">릴스 템플릿</h2>
+          <div className="grid grid-cols-2 gap-4 sm:flex sm:animate-fade-in sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
+            {templates
+              .filter((t) => t.aspectRatio === '9:16' || t.tags.some(tag => ['릴스', '숏폼', '쇼츠', 'shorts'].includes(tag.toLowerCase())))
+              .map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  size="large"
+                />
+              ))}
           </div>
         </div>
       </section>
