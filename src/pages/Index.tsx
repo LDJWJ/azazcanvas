@@ -18,6 +18,15 @@ import template8 from '@/assets/templates/template-8.jpg';
 const featuredTemplates = [template1, template2, template3, template4];
 const bottomTemplates = [template5, template6, template7, template8, template1, template2, template3, template4];
 
+const categoryChips = [
+  { id: 'vlog', name: '브이로그' },
+  { id: 'ootd', name: 'OOTD/패션' },
+  { id: 'food', name: '먹방/레시피' },
+  { id: 'beauty', name: '뷰티/메이크업' },
+  { id: 'fitness', name: '운동/헬스' },
+  { id: 'news', name: '뉴스/정보' },
+];
+
 const Index = () => {
   const navigate = useNavigate();
 
@@ -64,7 +73,18 @@ const Index = () => {
       {/* Reels Templates Section */}
       <section className="overflow-hidden py-8 pb-16">
         <div className="container">
-          <h2 className="mb-6 text-2xl font-bold text-foreground">릴스 템플릿</h2>
+          <h2 className="mb-4 text-2xl font-bold text-foreground">릴스 템플릿</h2>
+          <div className="mb-6 flex flex-wrap gap-2">
+            {categoryChips.map((chip) => (
+              <button
+                key={chip.id}
+                onClick={() => navigate(`/search?q=${encodeURIComponent(chip.name)}`)}
+                className="rounded-full border border-border bg-secondary/50 px-4 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
+                {chip.name}
+              </button>
+            ))}
+          </div>
           <div className="grid grid-cols-2 gap-4 sm:flex sm:animate-fade-in sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
             {templates
               .filter((t) => t.aspectRatio === '9:16' || t.tags.some(tag => ['릴스', '숏폼', '쇼츠', 'shorts'].includes(tag.toLowerCase())))
