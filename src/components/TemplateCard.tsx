@@ -54,7 +54,7 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
 
   const handleClick = () => {
     trackClick(`card_tpl_${template.id}`);
-    // Navigate to template detail or editor
+    navigate(`/template/${template.id}`);
   };
 
   const handleLikeClick = (e: React.MouseEvent) => {

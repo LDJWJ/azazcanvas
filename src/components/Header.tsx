@@ -62,7 +62,11 @@ const categoryMenuData = {
   ],
 };
 
-export function Header() {
+interface HeaderProps {
+  hideCreateButton?: boolean;
+}
+
+export function Header({ hideCreateButton = false }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -336,9 +340,11 @@ export function Header() {
           <button className="hidden rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:flex">
             <HelpCircle className="h-5 w-5" />
           </button>
-          <Button variant="default" className="btn-hero-primary h-9 px-4 text-sm">
-            디자인 만들기
-          </Button>
+          {!hideCreateButton && (
+            <Button variant="default" className="btn-hero-primary h-9 px-4 text-sm">
+              디자인 만들기
+            </Button>
+          )}
           <Button variant="outline" className="hidden h-9 rounded-full px-4 text-sm md:flex">
             로그인
           </Button>
