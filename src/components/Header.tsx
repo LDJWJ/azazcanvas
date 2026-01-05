@@ -54,7 +54,6 @@ const menuData = {
     name: '교육·비즈니스',
     items: [
       { id: 'presentation', name: '프레젠테이션', icon: 'Presentation' },
-      { id: 'card-news', name: '카드뉴스', icon: 'Newspaper' },
       { id: 'document', name: '문서 서식', icon: 'FileText' },
       { id: 'detail-page', name: '상세페이지', icon: 'Monitor' },
       { id: 'logo', name: '로고', icon: 'Smile' },
