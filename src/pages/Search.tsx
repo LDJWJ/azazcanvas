@@ -187,7 +187,7 @@ const Search = () => {
       {/* Footer */}
       <footer className="border-t border-border bg-secondary/30 py-8">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2024 아자아자캔버스. 모든 권리 보유.</p>
+          <p>© 2025 아자아자캔버스. 모든 권리 보유.</p>
         </div>
       </footer>
     </div>
