@@ -72,7 +72,7 @@ const Index = () => {
 
       {/* Reels Templates Section */}
       <section className="overflow-hidden py-8 pb-16">
-        <div className="container">
+        <div className="px-5">
           <h2 className="mb-4 text-2xl font-bold text-foreground">릴스 템플릿</h2>
           <div className="mb-6 flex flex-wrap gap-2">
             {categoryChips.map((chip) => (
@@ -85,7 +85,7 @@ const Index = () => {
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:flex sm:animate-fade-in sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
+          <div className="grid grid-cols-2 gap-3.5 sm:flex sm:animate-fade-in sm:gap-3.5 sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
             {templates
               .filter((t) => t.aspectRatio === '9:16' || t.tags.some(tag => ['릴스', '숏폼', '쇼츠', 'shorts'].includes(tag.toLowerCase())))
               .map((template) => (
