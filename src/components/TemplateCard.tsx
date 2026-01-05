@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, Play } from 'lucide-react';
 import { Template } from '@/data/templates';
 import { trackClick } from '@/lib/tracking';
+import { useVideoPreview } from '@/hooks/useVideoPreview';
 
 // Import template images
 import template1 from '@/assets/templates/template-1.jpg';
@@ -43,7 +44,18 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
 
-  // 릴스/숏폼 템플릿을 위해 9:16 세로 비율 사용
+  const {
+    videoRef,
+    containerRef,
+    isPlaying,
+    isLoaded,
+    hasError,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleVideoLoad,
+    handleVideoError,
+  } = useVideoPreview({ videoUrl: template.videoUrl });
+
   const aspectRatioClass = 'aspect-[9/16]';
 
   const sizeClass = {
@@ -65,24 +77,54 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
 
   const thumbnailSrc = thumbnailMap[template.id] || template.thumbnail;
   const isVideo = ['instagram-reels', 'youtube-shorts', 'tiktok', 'youtube-video'].includes(template.type);
+  const hasVideoPreview = !!template.videoUrl && !hasError;
 
   return (
     <div
+      ref={containerRef}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`template-card group cursor-pointer ${sizeClass}`}
     >
       <div className={`relative overflow-hidden rounded-lg bg-muted ${aspectRatioClass}`}>
+        {/* Thumbnail Image */}
         <img
           src={thumbnailSrc}
           alt={template.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+          className={`h-full w-full object-cover transition-all duration-300 ${
+            isPlaying && hasVideoPreview ? 'opacity-0' : 'opacity-100 group-hover:scale-105'
+          }`}
         />
         
-        {/* Video indicator */}
-        {isVideo && (
+        {/* Video Preview */}
+        {hasVideoPreview && (
+          <video
+            ref={videoRef}
+            src={template.videoUrl}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onLoadedData={handleVideoLoad}
+            onError={handleVideoError}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+              isPlaying && isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        )}
+        
+        {/* Video indicator - hide when playing */}
+        {isVideo && !isPlaying && (
           <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">
             <Play className="h-3 w-3 fill-current" />
           </div>
+        )}
+
+        {/* Playing indicator */}
+        {isPlaying && hasVideoPreview && (
+          <div className="absolute inset-0 ring-2 ring-primary/50 ring-inset rounded-lg" />
         )}
 
         {/* New badge */}
@@ -102,15 +144,17 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
           </button>
         )}
 
-        {/* Hover overlay */}
-        <div className="template-card-overlay">
-          <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-foreground">
-            템플릿 사용하기
-          </span>
-        </div>
+        {/* Hover overlay - hide when playing */}
+        {!isPlaying && (
+          <div className="template-card-overlay">
+            <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-foreground">
+              템플릿 사용하기
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Title (optional, for grid view) */}
+      {/* Title */}
       {size === 'large' && (
         <p className="mt-2 truncate text-sm text-muted-foreground">{template.title}</p>
       )}
