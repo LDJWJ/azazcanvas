@@ -43,12 +43,8 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
 
-  const aspectRatioClass = {
-    '16:9': 'aspect-video',
-    '9:16': 'aspect-[9/16]',
-    '1:1': 'aspect-square',
-    '4:3': 'aspect-[4/3]',
-  }[template.aspectRatio];
+  // 일관된 카드 크기를 위해 4:3 비율로 통일
+  const aspectRatioClass = 'aspect-[4/3]';
 
   const sizeClass = {
     small: 'w-full min-w-[120px] sm:w-32',
