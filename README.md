@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# 아자아자캔버스
 
-## Project info
+디자인 템플릿 플랫폼 - PPT, 카드뉴스, 동영상 등 다양한 템플릿을 제공합니다.
+
+## 프로젝트 정보
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-## How can I edit this code?
+## 기술 스택
 
-There are several ways of editing your application.
+- **Vite** - 빠른 빌드 도구
+- **TypeScript** - 타입 안전성
+- **React** - UI 라이브러리
+- **shadcn/ui** - UI 컴포넌트
+- **Tailwind CSS** - 스타일링
 
-**Use Lovable**
+## 주요 파일 구조 및 기능
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 📁 페이지 (src/pages/)
 
-Changes made via Lovable will be committed automatically to this repo.
+| 파일 | 설명 |
+|------|------|
+| `Index.tsx` | 메인 홈페이지 - 히어로 섹션, 검색바, 추천 템플릿 표시 |
+| `Templates.tsx` | 템플릿 목록 페이지 - 캐러셀, 타입별 카드, 추천 템플릿 그리드 |
+| `Search.tsx` | 검색 결과 페이지 - 필터링, 정렬 기능 포함 |
+| `NotFound.tsx` | 404 에러 페이지 |
 
-**Use your preferred IDE**
+### 📁 컴포넌트 (src/components/)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+| 파일 | 설명 |
+|------|------|
+| `Header.tsx` | 상단 네비게이션 바 - 로고, 메뉴, 검색, 로그인 버튼 |
+| `SearchBar.tsx` | 검색 입력 컴포넌트 |
+| `Carousel.tsx` | 추천 템플릿 슬라이드 캐러셀 |
+| `TemplateCard.tsx` | 개별 템플릿 카드 - 이미지, 제목, 좋아요 기능 |
+| `TypeCards.tsx` | 타입별 분류 카드 (PPT, 카드뉴스, 포스터 등) |
+| `NavLink.tsx` | 네비게이션 링크 컴포넌트 |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 📁 데이터 및 유틸리티
 
-Follow these steps:
+| 파일 | 설명 |
+|------|------|
+| `src/data/templates.ts` | 템플릿 목록 데이터 |
+| `src/lib/tracking.ts` | Google Sheets 연동 페이지 트래킹 |
+| `src/lib/utils.ts` | 공통 유틸리티 함수 |
+
+### 📁 스타일
+
+| 파일 | 설명 |
+|------|------|
+| `src/index.css` | 전역 스타일 및 디자인 시스템 변수 |
+| `tailwind.config.ts` | Tailwind CSS 설정 |
+
+## 로컬 개발 환경 설정
+
+Node.js와 npm이 필요합니다 - [nvm으로 설치](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# 1. 저장소 클론
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# 2. 프로젝트 폴더로 이동
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
+# 3. 의존성 설치
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. 개발 서버 실행
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 배포 방법
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+[Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID)에서 Share → Publish 클릭
 
-**Use GitHub Codespaces**
+## 커스텀 도메인 연결
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+프로젝트 설정 > Domains에서 도메인을 연결할 수 있습니다.
 
-## What technologies are used for this project?
+자세한 내용: [커스텀 도메인 설정](https://docs.lovable.dev/features/custom-domain#custom-domain)
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+© 2025 아자아자캔버스. 모든 권리 보유.
