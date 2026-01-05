@@ -5,79 +5,33 @@ import { Template } from '@/data/templates';
 import { trackClick } from '@/lib/tracking';
 import { useVideoPreview } from '@/hooks/useVideoPreview';
 
-// Import template images - Vlog
-import vlog1 from '@/assets/templates/vlog-1.jpg';
-import vlog2 from '@/assets/templates/vlog-2.jpg';
-import vlog3 from '@/assets/templates/vlog-3.jpg';
-import vlog4 from '@/assets/templates/vlog-4.jpg';
-import vlog5 from '@/assets/templates/vlog-5.jpg';
-
-// Import template images - Fashion
-import fashion1 from '@/assets/templates/fashion-1.jpg';
-import fashion2 from '@/assets/templates/fashion-2.jpg';
-import fashion3 from '@/assets/templates/fashion-3.jpg';
-import fashion4 from '@/assets/templates/fashion-4.jpg';
-import fashion5 from '@/assets/templates/fashion-5.jpg';
-
-// Import template images - Food
-import food1 from '@/assets/templates/food-1.jpg';
-import food2 from '@/assets/templates/food-2.jpg';
-import food3 from '@/assets/templates/food-3.jpg';
-import food4 from '@/assets/templates/food-4.jpg';
-import food5 from '@/assets/templates/food-5.jpg';
-
-// Import template images - Beauty
-import beauty1 from '@/assets/templates/beauty-1.jpg';
-import beauty2 from '@/assets/templates/beauty-2.jpg';
-import beauty3 from '@/assets/templates/beauty-3.jpg';
-import beauty4 from '@/assets/templates/beauty-4.jpg';
-import beauty5 from '@/assets/templates/beauty-5.jpg';
-
-// Import template images - Fitness
-import fitness1 from '@/assets/templates/fitness-1.jpg';
-import fitness2 from '@/assets/templates/fitness-2.jpg';
-import fitness3 from '@/assets/templates/fitness-3.jpg';
-import fitness4 from '@/assets/templates/fitness-4.jpg';
-import fitness5 from '@/assets/templates/fitness-5.jpg';
-
-// Import template images - News
-import news1 from '@/assets/templates/news-1.jpg';
-import news2 from '@/assets/templates/news-2.jpg';
-import news3 from '@/assets/templates/news-3.jpg';
-import news4 from '@/assets/templates/news-4.jpg';
-import news5 from '@/assets/templates/news-5.jpg';
+// Import template images
+import template1 from '@/assets/templates/template-1.jpg';
+import template2 from '@/assets/templates/template-2.jpg';
+import template3 from '@/assets/templates/template-3.jpg';
+import template4 from '@/assets/templates/template-4.jpg';
+import template5 from '@/assets/templates/template-5.jpg';
+import template6 from '@/assets/templates/template-6.jpg';
+import template7 from '@/assets/templates/template-7.jpg';
+import template8 from '@/assets/templates/template-8.jpg';
+import template9 from '@/assets/templates/template-9.jpg';
+import template10 from '@/assets/templates/template-10.jpg';
+import template11 from '@/assets/templates/template-11.jpg';
+import template12 from '@/assets/templates/template-12.jpg';
 
 const thumbnailMap: Record<string, string> = {
-  'vlog-1': vlog1,
-  'vlog-2': vlog2,
-  'vlog-3': vlog3,
-  'vlog-4': vlog4,
-  'vlog-5': vlog5,
-  'fashion-1': fashion1,
-  'fashion-2': fashion2,
-  'fashion-3': fashion3,
-  'fashion-4': fashion4,
-  'fashion-5': fashion5,
-  'food-1': food1,
-  'food-2': food2,
-  'food-3': food3,
-  'food-4': food4,
-  'food-5': food5,
-  'beauty-1': beauty1,
-  'beauty-2': beauty2,
-  'beauty-3': beauty3,
-  'beauty-4': beauty4,
-  'beauty-5': beauty5,
-  'fitness-1': fitness1,
-  'fitness-2': fitness2,
-  'fitness-3': fitness3,
-  'fitness-4': fitness4,
-  'fitness-5': fitness5,
-  'news-1': news1,
-  'news-2': news2,
-  'news-3': news3,
-  'news-4': news4,
-  'news-5': news5,
+  'tpl-1': template1,
+  'tpl-2': template2,
+  'tpl-3': template3,
+  'tpl-4': template4,
+  'tpl-5': template5,
+  'tpl-6': template6,
+  'tpl-7': template7,
+  'tpl-8': template8,
+  'tpl-9': template9,
+  'tpl-10': template10,
+  'tpl-11': template11,
+  'tpl-12': template12,
 };
 
 interface TemplateCardProps {
@@ -200,8 +154,10 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
         )}
       </div>
 
-      {/* Title - 카드 아래에 표시 */}
-      <p className="mt-2 truncate text-sm text-muted-foreground">{template.title}</p>
+      {/* Title */}
+      {size === 'large' && (
+        <p className="mt-2 truncate text-sm text-muted-foreground">{template.title}</p>
+      )}
     </div>
   );
 }
