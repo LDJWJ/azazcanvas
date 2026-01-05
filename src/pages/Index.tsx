@@ -85,7 +85,7 @@ const Index = () => {
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-3.5 sm:flex sm:animate-fade-in sm:gap-3.5 sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
+          <div className="grid grid-cols-2 gap-[14px] sm:flex sm:animate-fade-in sm:gap-[14px] sm:overflow-x-auto sm:pb-4 sm:custom-scrollbar">
             {templates
               .filter((t) => t.aspectRatio === '9:16' || t.tags.some(tag => ['릴스', '숏폼', '쇼츠', 'shorts'].includes(tag.toLowerCase())))
               .map((template) => (
