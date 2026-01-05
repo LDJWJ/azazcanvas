@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Play } from 'lucide-react';
+import { ArrowLeft, Play, Upload, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { templates } from '@/data/templates';
 
@@ -43,11 +43,15 @@ const TemplateUse = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedRatio, setSelectedRatio] = useState('9:16');
+  const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const template = templates.find((t) => t.id === id) || templates[0];
   const thumbnailSrc = thumbnailMap[template.id] || template.thumbnail;
   
-  const isVideo = template.type === 'video' || template.tags.some(tag => 
+  const isVideoTemplate = template.type === 'video' || template.tags.some(tag => 
     ['릴스', '쇼츠', 'shorts', '숏폼', '동영상'].includes(tag.toLowerCase())
   );
 
@@ -57,9 +61,54 @@ const TemplateUse = () => {
     navigate(-1);
   };
 
+  const handleVideoUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate video file
+    if (!file.type.startsWith('video/')) {
+      alert('영상 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    setIsLoading(true);
+    setUploadedVideo(file);
+
+    // Create preview URL
+    const url = URL.createObjectURL(file);
+    setVideoPreviewUrl(url);
+
+    // Simulate loading
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  const handleRemoveVideo = () => {
+    if (videoPreviewUrl) {
+      URL.revokeObjectURL(videoPreviewUrl);
+    }
+    setUploadedVideo(null);
+    setVideoPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleStart = () => {
+    // Store video in sessionStorage for editor
+    if (videoPreviewUrl) {
+      sessionStorage.setItem('editorVideo', videoPreviewUrl);
+      sessionStorage.setItem('editorVideoName', uploadedVideo?.name || 'video');
+    }
     navigate(`/editor?template=${template.id}&ratio=${selectedRatio}`);
   };
+
+  const canStart = !isVideoTemplate || !!uploadedVideo;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -83,12 +132,43 @@ const TemplateUse = () => {
           {/* Template Preview - Dynamic aspect ratio */}
           <div className="relative mx-auto mb-6 flex max-w-sm items-center justify-center">
             <div className={`relative w-full overflow-hidden rounded-2xl bg-secondary ${currentAspect?.aspectClass || 'aspect-[9/16]'}`}>
-              <img
-                src={thumbnailSrc}
-                alt={template.title}
-                className="h-full w-full object-cover"
-              />
-              {isVideo && (
+              {/* Show uploaded video or template thumbnail */}
+              {videoPreviewUrl ? (
+                <video
+                  src={videoPreviewUrl}
+                  className="h-full w-full object-cover"
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <img
+                  src={thumbnailSrc}
+                  alt={template.title}
+                  className="h-full w-full object-cover"
+                />
+              )}
+              
+              {/* Loading overlay */}
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                </div>
+              )}
+
+              {/* Video loaded indicator */}
+              {videoPreviewUrl && !isLoading && (
+                <button
+                  onClick={handleRemoveVideo}
+                  className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+
+              {/* Play overlay for template without video */}
+              {isVideoTemplate && !videoPreviewUrl && !isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
                     <Play className="h-8 w-8 fill-primary text-primary" />
@@ -144,6 +224,53 @@ const TemplateUse = () => {
               ))}
             </div>
           </div>
+
+          {/* Video Upload Section - Only for video templates */}
+          {isVideoTemplate && (
+            <div className="mx-auto mt-6 max-w-sm">
+              <h3 className="mb-3 text-sm font-medium text-muted-foreground">
+                영상 불러오기
+              </h3>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              {uploadedVideo ? (
+                <div className="flex items-center gap-3 rounded-xl border border-primary bg-primary/5 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {uploadedVideo.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {(uploadedVideo.size / (1024 * 1024)).toFixed(1)} MB
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleRemoveVideo}
+                    className="rounded-full p-2 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleVideoUpload}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border p-6 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  <Upload className="h-5 w-5" />
+                  <span className="font-medium">영상 불러오기</span>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </main>
 
@@ -152,10 +279,16 @@ const TemplateUse = () => {
         <div className="container">
           <Button
             onClick={handleStart}
-            className="btn-hero-primary w-full py-6 text-base font-semibold"
+            disabled={!canStart || isLoading}
+            className="btn-hero-primary w-full py-6 text-base font-semibold disabled:opacity-50"
           >
-            이 템플릿으로 시작하기
+            {isLoading ? '로딩 중...' : '이 템플릿으로 시작하기'}
           </Button>
+          {isVideoTemplate && !uploadedVideo && (
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              영상을 먼저 불러와주세요
+            </p>
+          )}
         </div>
       </div>
     </div>

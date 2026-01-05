@@ -6,6 +6,7 @@ export interface Template {
   aspectRatio: '16:9' | '9:16' | '1:1' | '4:3';
   tags: string[];
   thumbnail: string;
+  videoUrl?: string; // 미리보기 영상 URL
   isNew?: boolean;
   isFeatured?: boolean;
 }
