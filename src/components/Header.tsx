@@ -196,7 +196,7 @@ export function Header() {
 
                 {/* Mobile Menu Footer */}
                 <div className="border-t border-border p-4">
-                  <Button variant="default" className="btn-hero-primary mb-2 w-full">
+                  <Button variant="default" className="btn-hero-primary mb-2 w-full rounded-full">
                     디자인 만들기
                   </Button>
                   <Button variant="outline" className="w-full rounded-full">
