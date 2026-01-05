@@ -4,6 +4,7 @@ import { Heart, Play } from 'lucide-react';
 import { Template } from '@/data/templates';
 import { trackClick } from '@/lib/tracking';
 import { useVideoPreview } from '@/hooks/useVideoPreview';
+import { useVideoPlayback } from '@/contexts/VideoPlaybackContext';
 
 // Import template images
 import template1 from '@/assets/templates/template-1.jpg';
@@ -19,7 +20,7 @@ import template10 from '@/assets/templates/template-10.jpg';
 import template11 from '@/assets/templates/template-11.jpg';
 import template12 from '@/assets/templates/template-12.jpg';
 
-const thumbnailMap: Record<string, string> = {
+export const thumbnailMap: Record<string, string> = {
   'tpl-1': template1,
   'tpl-2': template2,
   'tpl-3': template3,
@@ -43,6 +44,7 @@ interface TemplateCardProps {
 export function TemplateCard({ template, size = 'medium', showLike = false }: TemplateCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
+  const { currentlyPlayingId, setCurrentlyPlaying } = useVideoPlayback();
 
   const {
     videoRef,
@@ -54,7 +56,12 @@ export function TemplateCard({ template, size = 'medium', showLike = false }: Te
     handleMouseLeave,
     handleVideoLoad,
     handleVideoError,
-  } = useVideoPreview({ videoUrl: template.videoUrl });
+  } = useVideoPreview({ 
+    videoUrl: template.videoUrl,
+    cardId: template.id,
+    currentlyPlayingId,
+    onRequestPlayback: setCurrentlyPlaying,
+  });
 
   const aspectRatioClass = 'aspect-[9/16]';
 

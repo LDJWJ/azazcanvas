@@ -1,22 +1,50 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import { Header } from '@/components/Header';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { SearchBar } from '@/components/SearchBar';
 import { TemplateCard } from '@/components/TemplateCard';
-import { templates, searchTemplates, relatedKeywords } from '@/data/templates';
+import { searchTemplates } from '@/data/templates';
 import { trackClick, trackPageView, trackPageLeave } from '@/lib/tracking';
 
-const styleFilters = ['모던', '심플', '빈티지', '컬러풀', '미니멀'];
-const colorFilters = ['레드', '블루', '그린', '옐로우', '블랙', '화이트'];
+// 목적 중심 탐색 칩
+const purposeChips = [
+  { id: 'daily', label: '일상 기록' },
+  { id: 'info', label: '정보 전달' },
+  { id: 'review', label: '후기' },
+  { id: 'routine', label: '루틴' },
+  { id: 'branding', label: '브랜딩' },
+];
+
+const difficultyChips = [
+  { id: 'quick', label: '빠르게 만들기' },
+  { id: 'normal', label: '보통' },
+  { id: 'detailed', label: '공들인 영상' },
+];
+
+const situationChips = [
+  { id: 'daily-upload', label: '매일 업로드용' },
+  { id: 'experiment', label: '실험용' },
+  { id: 'main-content', label: '메인 콘텐츠' },
+];
+
+const moodChips = [
+  { id: 'emotional', label: '감성' },
+  { id: 'clean', label: '깔끔' },
+  { id: 'casual', label: '캐주얼' },
+  { id: 'impact', label: '임팩트' },
+];
+
+const compositionChips = [
+  { id: 'subtitle', label: '자막 중심' },
+  { id: 'video', label: '영상 중심' },
+  { id: 'mixed', label: '이미지+텍스트' },
+];
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const query = searchParams.get('q') || '';
-  const [selectedStyle, setSelectedStyle] = useState<string>('');
-  const [selectedColor, setSelectedColor] = useState<string>('');
-  const [isStyleOpen, setIsStyleOpen] = useState(false);
-  const [isColorOpen, setIsColorOpen] = useState(false);
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
 
   useEffect(() => {
     trackPageView('search');
@@ -27,62 +55,39 @@ const Search = () => {
     return searchTemplates(query);
   }, [query]);
 
-  // Get related keywords for the search query
-  const keywords = useMemo(() => {
-    const lowerQuery = query.toLowerCase();
-    for (const [key, values] of Object.entries(relatedKeywords)) {
-      if (lowerQuery.includes(key.toLowerCase())) {
-        return values;
-      }
-    }
-    return ['숏폼', '쇼츠', 'shorts', '단축'];
-  }, [query]);
-
-  const handleKeywordClick = (keyword: string) => {
-    trackClick(`chip_kw_${keyword}`);
-    setSearchParams({ q: keyword });
+  const handleBack = () => {
+    navigate(-1);
   };
 
-  const handleStyleSelect = (style: string) => {
-    trackClick('filter_style', { style });
-    setSelectedStyle(style === selectedStyle ? '' : style);
-    setIsStyleOpen(false);
+  const handleChipClick = (chipId: string) => {
+    trackClick(`chip_${chipId}`);
+    setSelectedChips(prev => 
+      prev.includes(chipId) 
+        ? prev.filter(id => id !== chipId)
+        : [...prev, chipId]
+    );
   };
 
-  const handleColorSelect = (color: string) => {
-    trackClick('filter_color', { color });
-    setSelectedColor(color === selectedColor ? '' : color);
-    setIsColorOpen(false);
-  };
-
-  // Calculate mixed ratio stats for tracking
-  const mixedRatioStats = useMemo(() => {
-    const vertical = results.filter((t) => t.aspectRatio === '9:16').length;
-    const horizontal = results.filter((t) => t.aspectRatio === '16:9').length;
-    const other = results.length - vertical - horizontal;
-    return { vertical, horizontal, other, total: results.length };
-  }, [results]);
+  const pageTitle = query ? `${query} 템플릿` : '템플릿 검색';
 
   return (
     <div className="min-h-screen bg-background">
-      <Header hideCreateButton />
+      {/* Simplified Header - Back button + centered title */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background">
+        <div className="container flex h-14 items-center">
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <h1 className="flex-1 text-center font-semibold">{pageTitle}</h1>
+          <div className="w-9" />
+        </div>
+      </header>
 
-      <main className="container py-6">
-        {/* Breadcrumb */}
-        <nav className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-          <Link to="/templates" className="hover:text-foreground">
-            템플릿
-          </Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">{query || '검색 결과'}</span>
-        </nav>
-
-        {/* Title */}
-        <h1 className="mb-4 text-xl font-bold md:text-2xl">
-          {query ? `${query} 템플릿` : '검색 결과'}
-        </h1>
-
-        {/* Search Bar - Compact */}
+      <main className="container py-4">
+        {/* Search Bar - Below header */}
         <div className="mb-5">
           <SearchBar 
             size="compact" 
@@ -90,69 +95,87 @@ const Search = () => {
           />
         </div>
 
-        {/* Filters & Keywords */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          {/* Style Filter */}
-          <div className="relative">
-            <button
-              onClick={() => setIsStyleOpen(!isStyleOpen)}
-              className="chip flex items-center gap-1"
-            >
-              스타일 {selectedStyle && `· ${selectedStyle}`}
-              <ChevronDown className="h-3 w-3" />
-            </button>
-            {isStyleOpen && (
-              <div className="dropdown-menu left-0 top-full mt-2 w-36">
-                {styleFilters.map((style) => (
-                  <button
-                    key={style}
-                    onClick={() => handleStyleSelect(style)}
-                    className={`dropdown-item w-full ${selectedStyle === style ? 'bg-accent' : ''}`}
-                  >
-                    {style}
-                  </button>
-                ))}
-              </div>
-            )}
+        {/* Purpose-based Filter Chips */}
+        <div className="mb-6 space-y-4">
+          {/* 콘텐츠 목적 */}
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">콘텐츠 목적</p>
+            <div className="flex flex-wrap gap-2">
+              {purposeChips.map((chip) => (
+                <button
+                  key={chip.id}
+                  onClick={() => handleChipClick(chip.id)}
+                  className={`chip ${selectedChips.includes(chip.id) ? 'chip-active' : ''}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Color Filter */}
-          <div className="relative">
-            <button
-              onClick={() => setIsColorOpen(!isColorOpen)}
-              className="chip flex items-center gap-1"
-            >
-              색상 {selectedColor && `· ${selectedColor}`}
-              <ChevronDown className="h-3 w-3" />
-            </button>
-            {isColorOpen && (
-              <div className="dropdown-menu left-0 top-full mt-2 w-36">
-                {colorFilters.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => handleColorSelect(color)}
-                    className={`dropdown-item w-full ${selectedColor === color ? 'bg-accent' : ''}`}
-                  >
-                    {color}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* 제작 난이도 */}
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">제작 난이도</p>
+            <div className="flex flex-wrap gap-2">
+              {difficultyChips.map((chip) => (
+                <button
+                  key={chip.id}
+                  onClick={() => handleChipClick(chip.id)}
+                  className={`chip ${selectedChips.includes(chip.id) ? 'chip-active' : ''}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Divider */}
-          <div className="h-6 w-px bg-border" />
+          {/* 사용 상황 */}
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">사용 상황</p>
+            <div className="flex flex-wrap gap-2">
+              {situationChips.map((chip) => (
+                <button
+                  key={chip.id}
+                  onClick={() => handleChipClick(chip.id)}
+                  className={`chip ${selectedChips.includes(chip.id) ? 'chip-active' : ''}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {/* Related Keywords */}
-          {keywords.map((keyword) => (
-            <button
-              key={keyword}
-              onClick={() => handleKeywordClick(keyword)}
-              className={`chip ${query.toLowerCase().includes(keyword.toLowerCase()) ? 'chip-active' : ''}`}
-            >
-              {keyword}
-            </button>
-          ))}
+          {/* 영상 분위기 */}
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">영상 분위기</p>
+            <div className="flex flex-wrap gap-2">
+              {moodChips.map((chip) => (
+                <button
+                  key={chip.id}
+                  onClick={() => handleChipClick(chip.id)}
+                  className={`chip ${selectedChips.includes(chip.id) ? 'chip-active' : ''}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 구성 방식 */}
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">구성 방식</p>
+            <div className="flex flex-wrap gap-2">
+              {compositionChips.map((chip) => (
+                <button
+                  key={chip.id}
+                  onClick={() => handleChipClick(chip.id)}
+                  className={`chip ${selectedChips.includes(chip.id) ? 'chip-active' : ''}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Results Grid */}

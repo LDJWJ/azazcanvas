@@ -1,37 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Play, Upload, X, Check } from 'lucide-react';
+import { ArrowLeft, Upload, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { templates } from '@/data/templates';
-
-// Import template images
-import template1 from '@/assets/templates/template-1.jpg';
-import template2 from '@/assets/templates/template-2.jpg';
-import template3 from '@/assets/templates/template-3.jpg';
-import template4 from '@/assets/templates/template-4.jpg';
-import template5 from '@/assets/templates/template-5.jpg';
-import template6 from '@/assets/templates/template-6.jpg';
-import template7 from '@/assets/templates/template-7.jpg';
-import template8 from '@/assets/templates/template-8.jpg';
-import template9 from '@/assets/templates/template-9.jpg';
-import template10 from '@/assets/templates/template-10.jpg';
-import template11 from '@/assets/templates/template-11.jpg';
-import template12 from '@/assets/templates/template-12.jpg';
-
-const thumbnailMap: Record<string, string> = {
-  'tpl-1': template1,
-  'tpl-2': template2,
-  'tpl-3': template3,
-  'tpl-4': template4,
-  'tpl-5': template5,
-  'tpl-6': template6,
-  'tpl-7': template7,
-  'tpl-8': template8,
-  'tpl-9': template9,
-  'tpl-10': template10,
-  'tpl-11': template11,
-  'tpl-12': template12,
-};
+import { thumbnailMap } from '@/components/TemplateCard';
 
 const aspectRatioOptions = [
   { value: '9:16', label: '9:16', description: '세로형', aspectClass: 'aspect-[9/16]' },
@@ -47,6 +19,7 @@ const TemplateUse = () => {
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const templateVideoRef = useRef<HTMLVideoElement>(null);
 
   const template = templates.find((t) => t.id === id) || templates[0];
   const thumbnailSrc = thumbnailMap[template.id] || template.thumbnail;
@@ -55,7 +28,17 @@ const TemplateUse = () => {
     ['릴스', '쇼츠', 'shorts', '숏폼', '동영상'].includes(tag.toLowerCase())
   );
 
+  const hasTemplateVideo = !!template.videoUrl;
   const currentAspect = aspectRatioOptions.find(opt => opt.value === selectedRatio);
+
+  // Auto-play template preview video
+  useEffect(() => {
+    if (templateVideoRef.current && hasTemplateVideo && !videoPreviewUrl) {
+      templateVideoRef.current.play().catch(() => {
+        // Ignore autoplay errors
+      });
+    }
+  }, [hasTemplateVideo, videoPreviewUrl]);
 
   const handleBack = () => {
     navigate(-1);
@@ -69,7 +52,6 @@ const TemplateUse = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate video file
     if (!file.type.startsWith('video/')) {
       alert('영상 파일만 업로드 가능합니다.');
       return;
@@ -78,11 +60,9 @@ const TemplateUse = () => {
     setIsLoading(true);
     setUploadedVideo(file);
 
-    // Create preview URL
     const url = URL.createObjectURL(file);
     setVideoPreviewUrl(url);
 
-    // Simulate loading
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -100,7 +80,6 @@ const TemplateUse = () => {
   };
 
   const handleStart = () => {
-    // Store video in sessionStorage for editor
     if (videoPreviewUrl) {
       sessionStorage.setItem('editorVideo', videoPreviewUrl);
       sessionStorage.setItem('editorVideoName', uploadedVideo?.name || 'video');
@@ -129,10 +108,10 @@ const TemplateUse = () => {
       {/* Content */}
       <main className="flex-1">
         <div className="container py-6">
-          {/* Template Preview - Dynamic aspect ratio */}
+          {/* Template Preview - Dynamic aspect ratio with video */}
           <div className="relative mx-auto mb-6 flex max-w-sm items-center justify-center">
             <div className={`relative w-full overflow-hidden rounded-2xl bg-secondary ${currentAspect?.aspectClass || 'aspect-[9/16]'}`}>
-              {/* Show uploaded video or template thumbnail */}
+              {/* Show uploaded video, template preview video, or thumbnail */}
               {videoPreviewUrl ? (
                 <video
                   src={videoPreviewUrl}
@@ -140,6 +119,15 @@ const TemplateUse = () => {
                   muted
                   loop
                   autoPlay
+                  playsInline
+                />
+              ) : hasTemplateVideo ? (
+                <video
+                  ref={templateVideoRef}
+                  src={template.videoUrl}
+                  className="h-full w-full object-cover"
+                  muted
+                  loop
                   playsInline
                 />
               ) : (
@@ -165,15 +153,6 @@ const TemplateUse = () => {
                 >
                   <X className="h-4 w-4" />
                 </button>
-              )}
-
-              {/* Play overlay for template without video */}
-              {isVideoTemplate && !videoPreviewUrl && !isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                    <Play className="h-8 w-8 fill-primary text-primary" />
-                  </div>
-                </div>
               )}
             </div>
           </div>
@@ -225,7 +204,7 @@ const TemplateUse = () => {
             </div>
           </div>
 
-          {/* Video Upload Section - Only for video templates */}
+          {/* Video Upload Section */}
           {isVideoTemplate && (
             <div className="mx-auto mt-6 max-w-sm">
               <h3 className="mb-3 text-sm font-medium text-muted-foreground">
