@@ -1,26 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, HelpCircle, Presentation, Newspaper, FileText, Monitor, Smile, Youtube, Play, Instagram, Film, CreditCard, FileImage, Files, Mail, Flag, Rows, Menu, X, ChevronRight } from 'lucide-react';
+import { ChevronDown, HelpCircle, Youtube, Play, Instagram, Film, Menu, X, ChevronRight, Video, Utensils, Sparkles, Dumbbell, Newspaper, Clapperboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { trackClick } from '@/lib/tracking';
 
 const iconMap: Record<string, React.ElementType> = {
-  Presentation,
-  Newspaper,
-  FileText,
-  Monitor,
-  Smile,
   Youtube,
   Play,
   Instagram,
   Film,
-  CreditCard,
-  FileImage,
-  Files,
-  Mail,
-  Flag,
-  Rows,
+  Video,
+  Utensils,
+  Sparkles,
+  Dumbbell,
+  Newspaper,
+  Clapperboard,
 };
 
 const socialMenuData = {
@@ -29,7 +24,7 @@ const socialMenuData = {
     icon: 'Youtube',
     items: [
       { id: 'youtube-thumbnail', name: '유튜브 썸네일', icon: 'Youtube' },
-      { id: 'youtube-video', name: '유튜브 동영상', icon: 'Play' },
+      { id: 'youtube-shorts', name: '유튜브 쇼츠', icon: 'Play', highlight: true },
     ],
   },
   instagram: {
@@ -38,6 +33,13 @@ const socialMenuData = {
     items: [
       { id: 'instagram-feed', name: '인스타그램 피드', icon: 'Instagram' },
       { id: 'instagram-reels', name: '인스타그램 릴스', icon: 'Film', highlight: true },
+    ],
+  },
+  tiktok: {
+    name: '틱톡',
+    icon: 'Clapperboard',
+    items: [
+      { id: 'tiktok', name: '틱톡', icon: 'Clapperboard', highlight: true },
     ],
   },
   naverClip: {
@@ -49,27 +51,15 @@ const socialMenuData = {
   },
 };
 
-const menuData = {
-  education: {
-    name: '교육·비즈니스',
-    items: [
-      { id: 'presentation', name: '프레젠테이션', icon: 'Presentation' },
-      { id: 'document', name: '문서 서식', icon: 'FileText' },
-      { id: 'detail-page', name: '상세페이지', icon: 'Monitor' },
-      { id: 'logo', name: '로고', icon: 'Smile' },
-    ],
-  },
-  print: {
-    name: '인쇄',
-    items: [
-      { id: 'business-card', name: '명함', icon: 'CreditCard' },
-      { id: 'poster', name: '포스터', icon: 'FileImage' },
-      { id: 'flyer', name: '전단지', icon: 'Files' },
-      { id: 'postcard', name: '엽서카드', icon: 'Mail' },
-      { id: 'banner', name: '현수막', icon: 'Flag' },
-      { id: 'vinyl-banner', name: '배너', icon: 'Rows' },
-    ],
-  },
+const categoryMenuData = {
+  items: [
+    { id: 'vlog', name: '브이로그', icon: 'Video' },
+    { id: 'ootd', name: 'OOTD/패션', icon: 'Sparkles' },
+    { id: 'food', name: '먹방/레시피', icon: 'Utensils' },
+    { id: 'beauty', name: '뷰티/메이크업', icon: 'Sparkles' },
+    { id: 'fitness', name: '운동/헬스', icon: 'Dumbbell' },
+    { id: 'news', name: '뉴스/정보', icon: 'Newspaper' },
+  ],
 };
 
 export function Header() {
@@ -185,64 +175,41 @@ export function Header() {
                     )}
                   </div>
 
-                  {/* Template Categories */}
+                  {/* Category Menu */}
                   <div className="border-b border-border">
                     <button
-                      onClick={() => toggleCategory('templates')}
+                      onClick={() => toggleCategory('category')}
                       className="flex w-full items-center justify-between p-4 text-left font-medium hover:bg-secondary"
                     >
-                      템플릿
-                      <ChevronRight className={`h-5 w-5 transition-transform ${expandedCategory === 'templates' ? 'rotate-90' : ''}`} />
+                      카테고리
+                      <ChevronRight className={`h-5 w-5 transition-transform ${expandedCategory === 'category' ? 'rotate-90' : ''}`} />
                     </button>
                     
-                    {expandedCategory === 'templates' && (
+                    {expandedCategory === 'category' && (
                       <div className="bg-secondary/30 pb-2">
-                        {Object.entries(menuData).map(([key, category]) => (
-                          <div key={key} className="px-4 py-2">
-                            <h4 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
-                              {category.name}
-                            </h4>
-                            <div className="space-y-1">
-                              {category.items.map((item) => {
-                                const Icon = iconMap[item.icon];
-                                return (
-                                  <button
-                                    key={item.id}
-                                    onClick={() => handleMenuItemClick(item.id, item.name)}
-                                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-secondary"
-                                  >
-                                    {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-                                    <span>{item.name}</span>
-                                  </button>
-                                );
-                              })}
-                            </div>
+                        <div className="px-4 py-2">
+                          <div className="space-y-1">
+                            {categoryMenuData.items.map((item) => {
+                              const Icon = iconMap[item.icon];
+                              return (
+                                <button
+                                  key={item.id}
+                                  onClick={() => handleMenuItemClick(item.id, item.name)}
+                                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-secondary"
+                                >
+                                  {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+                                  <span>{item.name}</span>
+                                </button>
+                              );
+                            })}
                           </div>
-                        ))}
+                        </div>
                       </div>
                     )}
                   </div>
 
                   {/* Other Menu Items */}
                   <nav className="p-2">
-                    <button
-                      onClick={() => handleMobileNavClick('/templates')}
-                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium hover:bg-secondary"
-                    >
-                      추천 기능
-                    </button>
-                    <button
-                      onClick={() => handleMobileNavClick('/enterprise')}
-                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium hover:bg-secondary"
-                    >
-                      기업용
-                    </button>
-                    <button
-                      onClick={() => handleMobileNavClick('/education')}
-                      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium hover:bg-secondary"
-                    >
-                      교육용
-                    </button>
                     <button
                       onClick={() => handleMobileNavClick('/pricing')}
                       className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium hover:bg-secondary"
@@ -274,101 +241,87 @@ export function Header() {
 
           {/* Navigation - Desktop */}
           <nav className="hidden items-center gap-1 md:flex">
+            {/* 소셜 미디어 Menu */}
             <div className="relative" ref={menuRef}>
               <button
                 onClick={handleMenuToggle}
                 className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
               >
-                템플릿
+                소셜 미디어
                 <ChevronDown className={`h-4 w-4 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Mega Menu */}
               {isMenuOpen && (
-                <div className="dropdown-menu animate-scale-in left-0 top-full mt-2 w-[700px] p-6">
-                  {/* Social Media Section - Top */}
-                  <div className="mb-6 border-b border-border pb-4">
-                    <h3 className="mb-4 text-sm font-semibold text-foreground">소셜 미디어</h3>
-                    <div className="grid grid-cols-3 gap-6">
-                      {Object.entries(socialMenuData).map(([key, category]) => {
-                        const CategoryIcon = iconMap[category.icon];
-                        return (
-                          <div key={key}>
-                            <h4 className="mb-2 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                              {CategoryIcon && <CategoryIcon className="h-3 w-3" />}
-                              {category.name}
-                            </h4>
-                            <ul className="space-y-1">
-                              {category.items.map((item) => {
-                                const Icon = iconMap[item.icon];
-                                return (
-                                  <li key={item.id}>
-                                    <button
-                                      onClick={() => handleMenuItemClick(item.id, item.name)}
-                                      className="dropdown-item w-full"
-                                    >
-                                      {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-                                      <span>{item.name}</span>
-                                      {'highlight' in item && item.highlight && (
-                                        <span className="ml-auto text-xs text-primary">NEW</span>
-                                      )}
-                                    </button>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
-                  {/* Other Categories */}
-                  <div className="grid grid-cols-2 gap-8">
-                    {Object.entries(menuData).map(([key, category]) => (
-                      <div key={key}>
-                        <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
-                          {category.name}
-                        </h3>
-                        <ul className="space-y-1">
-                          {category.items.map((item) => {
-                            const Icon = iconMap[item.icon];
-                            return (
-                              <li key={item.id}>
-                                <button
-                                  onClick={() => handleMenuItemClick(item.id, item.name)}
-                                  className="dropdown-item w-full"
-                                >
-                                  {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-                                  <span>{item.name}</span>
-                                </button>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ))}
+                <div className="dropdown-menu animate-scale-in left-0 top-full mt-2 w-[600px] p-6">
+                  <div className="grid grid-cols-4 gap-6">
+                    {Object.entries(socialMenuData).map(([key, category]) => {
+                      const CategoryIcon = iconMap[category.icon];
+                      return (
+                        <div key={key}>
+                          <h4 className="mb-2 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                            {CategoryIcon && <CategoryIcon className="h-3 w-3" />}
+                            {category.name}
+                          </h4>
+                          <ul className="space-y-1">
+                            {category.items.map((item) => {
+                              const Icon = iconMap[item.icon];
+                              return (
+                                <li key={item.id}>
+                                  <button
+                                    onClick={() => handleMenuItemClick(item.id, item.name)}
+                                    className="dropdown-item w-full"
+                                  >
+                                    {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+                                    <span>{item.name}</span>
+                                    {'highlight' in item && item.highlight && (
+                                      <span className="ml-auto text-xs text-primary">NEW</span>
+                                    )}
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
 
-            <button className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary">
-              추천 기능
-              <ChevronDown className="h-4 w-4" />
-            </button>
-            <Link
-              to="/enterprise"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              기업용
-            </Link>
-            <Link
-              to="/education"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-            >
-              교육용
-            </Link>
+            {/* 카테고리 Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setExpandedCategory(expandedCategory === 'desktop-category' ? null : 'desktop-category')}
+                className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                카테고리
+                <ChevronDown className={`h-4 w-4 transition-transform ${expandedCategory === 'desktop-category' ? 'rotate-180' : ''}`} />
+              </button>
+
+              {expandedCategory === 'desktop-category' && (
+                <div className="dropdown-menu animate-scale-in left-0 top-full mt-2 w-[300px] p-4">
+                  <ul className="space-y-1">
+                    {categoryMenuData.items.map((item) => {
+                      const Icon = iconMap[item.icon];
+                      return (
+                        <li key={item.id}>
+                          <button
+                            onClick={() => handleMenuItemClick(item.id, item.name)}
+                            className="dropdown-item w-full"
+                          >
+                            {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+                            <span>{item.name}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+
             <Link
               to="/pricing"
               className="rounded-lg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
